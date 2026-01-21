@@ -6,7 +6,7 @@ import Foundation
 
 public class URLRequestBuilder {
     
-    enum HTTPMethod: String{
+    public enum HTTPMethod: String {
         case get = "GET"
         case post = "POST"
     }
@@ -20,57 +20,70 @@ public class URLRequestBuilder {
     private var boundary: String = "Boundary-\(UUID().uuidString)"
     private var queryItems: [URLQueryItem] = []
 
+    // Public initializer so other modules can create the builder
+    public init() {}
+
     // MARK: - URL / Path
-    func setBaseURLString(_ urlString: String) -> URLRequestBuilder {
+    @discardableResult
+    public func setBaseURLString(_ urlString: String) -> URLRequestBuilder {
         self.baseURL = URL(string: urlString)
         return self
     }
 
-    func addPath(_ path: String) -> URLRequestBuilder {
+    @discardableResult
+    public func addPath(_ path: String) -> URLRequestBuilder {
         pathComponents.append(path)
         return self
     }
 
-    func addPathComponents(_ paths: [String]) -> URLRequestBuilder {
+    @discardableResult
+    public func addPathComponents(_ paths: [String]) -> URLRequestBuilder {
         pathComponents.append(contentsOf: paths)
         return self
     }
 
-    func setURL(_ fullURL: String) -> URLRequestBuilder {
-        // Для полностью готовых URL
+    @discardableResult
+    public func setURL(_ fullURL: String) -> URLRequestBuilder {
+        // For fully prepared URLs
         self.baseURL = URL(string: fullURL)
         return self
     }
 
     // MARK: - Method, Headers, Timeout
-    func setMethod(_ method: HTTPMethod) -> URLRequestBuilder {
+    @discardableResult
+    public func setMethod(_ method: HTTPMethod) -> URLRequestBuilder {
         self.method = method
         return self
     }
 
-    func addHeader(key: String, value: String) -> URLRequestBuilder {
+    @discardableResult
+    public func addHeader(key: String, value: String) -> URLRequestBuilder {
         headers[key] = value
         return self
     }
 
-    func setHeaders(_ headers: [String: String]) -> URLRequestBuilder {
+    @discardableResult
+    public func setHeaders(_ headers: [String: String]) -> URLRequestBuilder {
         self.headers = headers
         return self
     }
 
-    func setTimeout(_ seconds: TimeInterval) -> URLRequestBuilder {
+    @discardableResult
+    public func setTimeout(_ seconds: TimeInterval) -> URLRequestBuilder {
         self.timeout = seconds
         return self
     }
 
     // MARK: - Query
-    func addQueryParameter(key: String, value: String?) -> URLRequestBuilder {
+    @discardableResult
+    public func addQueryParameter(key: String, value: String?) -> URLRequestBuilder {
         guard let value else { return self }
         queryItems.append(URLQueryItem(name: key, value: value))
         return self
     }
 
-    func addQueryParameters(_ params: [String: String?]) -> URLRequestBuilder {
+    @discardableResult
+    public func addQueryParameters(_ params: [String: String?]) -> URLRequestBuilder {
         for (key, value) in params {
             addQueryParameter(key: key, value: value)
         }
@@ -78,7 +91,8 @@ public class URLRequestBuilder {
     }
 
     // MARK: - JSON body
-    func setJSONBody<T: Encodable>(_ object: T) -> URLRequestBuilder {
+    @discardableResult
+    public func setJSONBody<T: Encodable>(_ object: T) -> URLRequestBuilder {
         let encoder = JSONEncoder()
         if let data = try? encoder.encode(object) {
             self.body = data
@@ -88,7 +102,7 @@ public class URLRequestBuilder {
     }
     
     // MARK: - Build request
-    func build() throws -> URLRequest {
+    public func build() throws -> URLRequest {
         guard var baseURL else {
             throw NSError(
                 domain: "Network",
