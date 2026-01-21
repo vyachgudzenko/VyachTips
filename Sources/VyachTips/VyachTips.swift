@@ -4,7 +4,7 @@
 
 import Foundation
 
-class URLRequestBuilder {
+public class URLRequestBuilder {
     
     enum HTTPMethod: String{
         case get = "GET"
